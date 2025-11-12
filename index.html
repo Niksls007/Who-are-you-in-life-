@@ -1,385 +1,637 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<title>Кто ты по жизни? Специально для отдела спецпроектов</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Кто ты по жизни? Специально для отдела спецпроектов — Версия 2.0</title>
 <style>
-  body {
-    font-family: "Segoe UI", "Roboto", sans-serif;
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-    margin: 0;
-    padding: 0;
-    color: #333;
+  :root{
+    --bg: #0b1220;
+    --card: #121a2b;
+    --muted: #8aa0c6;
+    --primary: #5dd4ff;
+    --accent: #7ef7c6;
+    --danger: #ff6b6b;
   }
-  .container {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 20px;
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", "Noto Sans", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+    color:#e9f1ff; background: radial-gradient(1200px 800px at 10% -10%, #193056, transparent), radial-gradient(1000px 600px at 120% 0%, #0e1a33, transparent), var(--bg);
   }
-  h1 {
-    text-align: center;
-    font-size: 2.2rem;
-    margin-top: 40px;
-    margin-bottom: 10px;
-    color: #1a2a6c;
+
+  /* Futuristic blurred blobs floating in the background */
+  body::before,
+  body::after {
+    content: '';
+    position: fixed;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    filter: blur(180px);
+    opacity: .2;
+    pointer-events: none;
+    z-index: -1;
   }
-  p.subtitle {
-    text-align: center;
-    font-size: 1rem;
-    margin-bottom: 40px;
-    color: #525252;
+  body::before {
+    background: radial-gradient(circle at 30% 30%, var(--primary), transparent 70%);
+    top: -200px;
+    left: -200px;
+    animation: blob1 40s linear infinite;
   }
-  .question {
-    background: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    margin-bottom: 20px;
+  body::after {
+    background: radial-gradient(circle at 70% 70%, var(--accent), transparent 70%);
+    bottom: -200px;
+    right: -200px;
+    animation: blob2 42s linear infinite;
   }
-  .question h2 {
-    font-size: 1.1rem;
-    margin-bottom: 10px;
+  @keyframes blob1 {
+    0% { transform: translate(0,0) scale(1); }
+    50% { transform: translate(300px, -150px) scale(1.35); }
+    100% { transform: translate(0,0) scale(1); }
   }
-  .options label {
-    display: block;
-    margin-bottom: 8px;
-    cursor: pointer;
+  @keyframes blob2 {
+    0% { transform: translate(0,0) scale(1); }
+    50% { transform: translate(-350px, 200px) scale(1.5); }
+    100% { transform: translate(0,0) scale(1); }
   }
-  .options input[type="radio"] {
-    margin-right: 8px;
+
+  /* Fade and slide animation for cards */
+  @keyframes fadeSlide {
+    0% { opacity: 0; transform: translateY(16px); }
+    100% { opacity: 1; transform: translateY(0); }
   }
-  #finishButton {
-    background: #1a2a6c;
-    color: #fff;
-    border: none;
-    padding: 12px 20px;
-    border-radius: 6px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background 0.3s ease;
-    margin-top: 20px;
+
+  /* Gradient shifting animation for title and progress bar */
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
   }
-  #finishButton:hover {
-    background: #41378f;
+
+  /* Animated stripes in progress bar */
+  @keyframes progressAnim {
+    0% { background-position: 0 0; }
+    100% { background-position: 200% 0; }
   }
-  #resultSection {
-    display: none;
-    margin-top: 30px;
-    background: #ffffff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+
+  /* Zoom in animation for modal when opening */
+  @keyframes modalIn {
+    0% { opacity: 0; transform: scale(0.9); }
+    100% { opacity: 1; transform: scale(1); }
   }
-  #resultSection h3 {
-    margin-top: 0;
-    color: #1a2a6c;
+  header{
+    position:relative;
+    background: linear-gradient(180deg, rgba(11,18,32,.9), rgba(11,18,32,.5));
+    border-bottom: 1px solid rgba(255,255,255,.08);
+    box-shadow: 0 4px 20px rgba(93,212,255,.12);
   }
-  #resultSection p {
-    margin: 0 0 10px;
+
+  header::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--primary), var(--accent), var(--primary));
+    background-size: 200% 100%;
+    animation: gradientShift 6s linear infinite;
   }
+  .wrap{max-width: 980px; margin: 0 auto; padding: 20px 16px}
+  h1{margin:0 0 12px; font-size: clamp(24px, 4vw, 40px); letter-spacing: .2px; text-align:center; line-height:1.25;}
+  .subtitle{color:var(--muted); font-size:14px}
+
+  /* Gradient effect on title lines */
+  h1 .line1, h1 .line2, h1 .line3 {
+    display:block;
+    background-size:200% 100%;
+    -webkit-background-clip:text;
+    background-clip:text;
+    color: transparent;
+    animation: gradientShift 8s linear infinite;
+  }
+  h1 .line1 { background-image: linear-gradient(90deg, var(--accent), var(--primary)); }
+  h1 .line2 { background-image: linear-gradient(90deg, var(--primary), #8de5ff, var(--accent)); }
+  h1 .line3 { background-image: linear-gradient(90deg, var(--accent), var(--primary)); }
+  .subtitle{font-style: italic; color:#a7bde0;}
+
+  .panel{
+    display:flex;
+    flex-direction: column;
+    align-items:center;
+    gap:8px;
+    margin-top:18px;
+  }
+  /* Feature chips styling */
+  .chip{
+    font-size:13px;
+    color:#e6f5ff;
+    border:1px solid rgba(255,255,255,.2);
+    padding:8px 14px;
+    border-radius:999px;
+    background: linear-gradient(90deg, rgba(93,212,255,.15), rgba(126,247,198,.15));
+    backdrop-filter: blur(6px);
+    box-shadow: inset 0 2px 6px rgba(0,0,0,.3);
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    cursor:default;
+  }
+  .chip::before{
+    content:'';
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+  }
+
+  main{padding: 18px 16px 120px}
+  .cards{max-width: 980px; margin: 0 auto; display:grid; gap:16px}
+  .card{background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02)); border:1px solid rgba(255,255,255,.08); border-radius:16px; padding:20px; box-shadow:0 4px 12px rgba(0,0,0,.2)}
+  /* Apply animation to cards using CSS variable --i to stagger */
+  .card{opacity:0; transform:translateY(16px); animation: fadeSlide .6s ease forwards; animation-delay: calc(.04s * var(--i));}
+  .q-title{font-size:16px; margin:0 0 12px}
+  .options{display:grid; gap:8px}
+  .option{position:relative; border:1px solid rgba(255,255,255,.12); background:#0f1626; color:#e6f1ff; border-radius:12px; padding:14px 16px; cursor:pointer; transition: transform .1s ease, border-color .14s ease, box-shadow .14s ease}
+  .option:hover{
+    transform: translateY(-2px);
+    border-color: rgba(93,212,255,.65);
+    box-shadow: 0 2px 6px rgba(0,0,0,.3);
+    background: linear-gradient(90deg, rgba(93,212,255,.08), rgba(126,247,198,.08));
+  }
+
+  .option.selected{
+    border-color: var(--accent);
+    box-shadow: inset 0 0 0 2px rgba(126,247,198,.7), 0 2px 8px rgba(0,0,0,.4);
+    background: linear-gradient(90deg, rgba(126,247,198,.16), rgba(93,212,255,.12));
+  }
+
+  /* Checkmark on selected options */
+  .option.selected::after{
+    content: '\2714';
+    position:absolute;
+    top:50%;
+    right:14px;
+    transform: translateY(-50%);
+    font-size: 16px;
+    color: var(--accent);
+  }
+
+  .actions{position:fixed; bottom:0; left:0; right:0; background: linear-gradient(180deg, rgba(11,18,32,.0), rgba(11,18,32,.9)); padding:16px; border-top:1px solid rgba(255,255,255,.08)}
+  .actions .inner{max-width:980px; margin:0 auto; display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap}
+  .btn{appearance:none; border:none; border-radius:12px; padding:12px 16px; font-weight:600; cursor:pointer}
+  .btn-primary{background: linear-gradient(90deg, var(--primary), #8de5ff); color:#022537}
+  .btn-ghost{background: transparent; color:#cfe2ff; border:1px solid rgba(255,255,255,.12)}
+  .counter{color: #cfe2ff; font-size:14px}
+
+  .legend{display:flex; gap:8px; flex-wrap:wrap}
+  .legend .pill{border-radius:999px; padding:6px 10px; border:1px solid rgba(255,255,255,.12); color:#cfe2ff; font-size:12px}
+
+  /* Modal */
+  dialog{width:min(880px, 96vw); border:none; border-radius:18px; padding:0; background:#0f1626; color:#e6f1ff; box-shadow: 0 18px 60px rgba(0,0,0,.55)}
+  dialog[open]{animation: modalIn .4s ease forwards;}
+  dialog::backdrop{background: rgba(3,7,16,.6); backdrop-filter: blur(3px)}
+  .modal-head{padding:18px; border-bottom:1px solid rgba(255,255,255,.08); display:flex; align-items:center; justify-content:space-between}
+  .modal-body{padding:18px}
+  .close{background:transparent; border:1px solid rgba(255,255,255,.12); color:#cfe2ff; border-radius:10px; padding:8px 10px; cursor:pointer}
+
+  .bars{display:grid; gap:10px; margin-top:6px}
+  .bar{background:#0a101b; border:1px solid rgba(255,255,255,.08); border-radius:10px; overflow:hidden}
+  .bar > div{height:12px; background: linear-gradient(90deg, var(--primary), var(--accent)); width:0; transition: width .7s ease-out;}
+  .bar-row{display:flex; align-items:center; gap:10px}
+  .bar-label{width:140px; color:#cfe2ff; font-size:13px}
+  .bar-val{width:56px; text-align:right; color:#e6f1ff; font-variant-numeric: tabular-nums}
+
+  .result-tag{display:inline-block; padding:8px 12px; border-radius:999px; border:1px solid rgba(255,255,255,.14); background: rgba(126,247,198,.08); color:#b9ffe2; font-weight:600}
+  .result-sub{color:#cfe2ff; margin:6px 0 14px}
+  .result-desc{color:#d9e6ff; line-height:1.6}
+
+  footer{max-width:980px; margin:50px auto 120px; color:#9fb3d8; font-size:12px; padding:0 16px}
 </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Кто ты по жизни?</h1>
-    <p class="subtitle">Специально для отдела спецпроектов — ответьте на все вопросы, выбрав вариант A, B, C или D, затем нажмите «Завершить тест».</p>
-    <form id="quizForm">
-      <!-- Вопросы будут вставлены динамически -->
-    </form>
-    <button type="button" id="finishButton">Завершить тест</button>
-    <div id="resultSection">
-      <h3>Ваш результат</h3>
-      <p id="resultText"></p>
+  <header>
+    <div class="wrap">
+      <h1>
+        <span class="line1">Кто ты по жизни?</span><br />
+        <span class="line2">Специально для отдела спецпроектов.</span><br />
+        <span class="line3">Версия&nbsp;2.0</span>
+      </h1>
+      <!-- subtitle removed as per request -->
+      <div class="panel">
+        <span class="chip">30 вопросов</span>
+        <span class="chip">Случайный порядок</span>
+        <span class="chip">Промежуточные поколения (Зелениал)</span>
+        <span class="chip">Профиль с процентами</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="cards" id="quiz"></div>
+  </main>
+
+  <div class="actions">
+    <div class="inner">
+      <div class="legend">
+        <span class="pill">Бумер</span>
+        <span class="pill">Поколение X</span>
+        <span class="pill">Миллениал</span>
+        <span class="pill">Зелениал</span>
+        <span class="pill">Зумер</span>
+      </div>
+      <div style="display:flex; gap:12px; align-items:center">
+        <div class="counter" id="counter">0/30 выбрано</div>
+        <div class="progress" style="width:140px; height:6px; border:1px solid rgba(255,255,255,.12); border-radius:10px; overflow:hidden; background:#0a101b;">
+          <div class="progress-bar" id="progressBar" style="width:0%; height:100%; background: linear-gradient(90deg, var(--primary), var(--accent), var(--primary)); background-size:200% 100%; animation: progressAnim 6s linear infinite; transition: width .4s ease-out;"></div>
+        </div>
+        <button class="btn btn-ghost" id="resetBtn">Сбросить</button>
+        <button class="btn btn-primary" id="submitBtn">Завершить тест</button>
+      </div>
     </div>
   </div>
 
+  <dialog id="resultModal">
+    <div class="modal-head">
+      <div>
+        <div style="opacity:.7; font-size:12px; letter-spacing:.3px">Результаты теста</div>
+        <div style="font-weight:700; font-size:18px">Поколенческий профиль</div>
+      </div>
+      <button class="close" id="closeModal">Закрыть</button>
+    </div>
+    <div class="modal-body" id="resultBody"></div>
+  </dialog>
+
 <script>
-  // Массив вопросов с вариантами и поколениями
-  const questionsData = [
-    {
-      text: "Отношение к карьере и работе",
-      options: [
-        { text: "Считаю, что успех приходит через длинные рабочие часы, лояльность одной организации и официальное признание.", gen: "boomer" },
-        { text: "Предпочитаю независимость и баланс между работой и личной жизнью; не люблю, когда мной руководят до мелочей.", gen: "genX" },
-        { text: "Ищу смысл и сотрудничество; хочу гибкий график, постоянную обратную связь и ценю разнообразие в коллективе.", gen: "millennial" },
-        { text: "Ожидаю, что работа будет соответствовать моим личным ценностям; важны ментальное здоровье и гибкость, готов совмещать несколько занятий.", gen: "genZ" }
-      ]
-    },
-    {
-      text: "Предпочтительный способ общения",
-      options: [
-        { text: "Очные встречи или телефонный звонок; ценю формальность и заранее назначенное время.", gen: "boomer" },
-        { text: "Короткие электронные письма или текстовые сообщения, без лишних деталей.", gen: "genX" },
-        { text: "Общение в мессенджерах и группах; важна постоянная обратная связь и командная работа.", gen: "millennial" },
-        { text: "Видео‑звонки, социальные сети, голосовые сообщения; ценю открытый и искренний диалог.", gen: "genZ" }
-      ]
-    },
-    {
-      text: "Отношение к технологиям",
-      options: [
-        { text: "Осваивал(а) технологии позже; до сих пор предпочитаю бумагу или личный контакт.", gen: "boomer" },
-        { text: "Комфортно ощущаю себя как с аналоговыми, так и с цифровыми инструментами; хорошо помню жизнь без гаджетов.", gen: "genX" },
-        { text: "Вырос(ла) в эпоху интернета; охотно осваиваю новинки, но важен и личный контакт.", gen: "millennial" },
-        { text: "Я \u00abцифровой абориген\u00bb; смартфоны и соцсети — неотъемлемая часть жизни.", gen: "genZ" }
-      ]
-    },
-    {
-      text: "Как вы предпочитаете учиться",
-      options: [
-        { text: "Формальное обучение с преподавателями и учебниками; уважение к авторитету.", gen: "boomer" },
-        { text: "Самостоятельное изучение и практика; лучше всего учусь на собственном опыте.", gen: "genX" },
-        { text: "Совместное обучение с наставниками и использование цифровых технологий.", gen: "millennial" },
-        { text: "Смотрю онлайн‑курсы и видео; черпаю знания из разных сообществ в интернете.", gen: "genZ" }
-      ]
-    },
-    {
-      text: "Отношение к изменениям",
-      options: [
-        { text: "Ценю стабильность и долгосрочные планы; предпочитаю проверенные методы.", gen: "boomer" },
-        { text: "Люблю гибкость, но важна безопасность; могу адаптироваться, хотя скептически отношусь к переменам.", gen: "genX" },
-        { text: "Радуюсь новым идеям и инновациям; стремлюсь к новым впечатлениям и смене деятельности.", gen: "millennial" },
-        { text: "Легко приспосабливаюсь к постоянным изменениям; быстро переключаюсь и ожидаю стремительного прогресса.", gen: "genZ" }
-      ]
-    },
-    {
-      text: "Финансовые привычки",
-      options: [
-        { text: "Уверен(а), что нужно много работать, постоянно откладывать и рассчитывать на пенсию.", gen: "boomer" },
-        { text: "Ценю финансовую независимость; инвестирую, чтобы быть свободным от работодателя.", gen: "genX" },
-        { text: "Ориентируюсь на впечатления, даже если есть долги; готов(а) работать в \u00abгиг‑экономике\u00bb ради гибкости.", gen: "millennial" },
-        { text: "Стараюсь рано начать копить и инвестировать; комфортно отношусь к цифровым деньгам и микровложениям, ценю опыт и впечатления.", gen: "genZ" }
-      ]
-    },
-    {
-      text: "Отношение к авторитетам",
-      options: [
-        { text: "Уважаю иерархию и решения руководителей; доверяю институциям и старшим.", gen: "boomer" },
-        { text: "Скептически отношусь к авторитету; оцениваю лидеров по их компетентности, а не должности.", gen: "genX" },
-        { text: "Предпочитаю плоские структуры; хочу участвовать в принятии решений и быть услышан(а).", gen: "millennial" },
-        { text: "Не доверяю институциям; ориентируюсь на людей, разделяющих мои ценности, а не на должности.", gen: "genZ" }
-      ]
-    },
-    {
-      text: "Гражданская активность и ценности",
-      options: [
-        { text: "Поддерживаю важные дела традиционными способами (голосование, пожертвования), не афишируя это.", gen: "boomer" },
-        { text: "Поддерживаю дела, но отделяю их от работы; считаю активизм личным.", gen: "genX" },
-        { text: "Участвую в благотворительности и делюсь этим в соцсетях; ожидаю, что работодатели будут социально ответственными.", gen: "millennial" },
-        { text: "Активно выхожу на акции, выбираю бренды по их социальным позициям; активизм — часть моей идентичности.", gen: "genZ" }
-      ]
-    },
-    {
-      text: "Отношение к ментальному здоровью",
-      options: [
-        { text: "Не люблю обсуждать такие темы; считаю, что нужно \u00abдержать себя в руках\u00bb.", gen: "boomer" },
-        { text: "Могу говорить о стрессах, но в целом держу личные проблемы при себе.", gen: "genX" },
-        { text: "Считаю заботу о ментальном здоровье важной; ожидаю, что работодатели будут об этом помнить.", gen: "millennial" },
-        { text: "Ставлю психическое благополучие на первое место; открыто говорю об этом и ищу ресурсы для поддержки.", gen: "genZ" }
-      ]
-    },
-    {
-      text: "Путешествия и впечатления",
-      options: [
-        { text: "Рассматриваю путешествия как награду после долгой работы; предпочитаю комфортные и заранее организованные туры.", gen: "boomer" },
-        { text: "Люблю путешествовать самостоятельно, но ценю комфорт и планирование.", gen: "genX" },
-        { text: "Путешествую ради впечатлений и изучения культур; пользуюсь цифровыми сервисами для поиска.", gen: "millennial" },
-        { text: "Путешествия — часть образа жизни; выбираю местные и аутентичные впечатления, готов(а) работать удалённо в пути.", gen: "genZ" }
-      ]
-    },
-    {
-      text: "Отношение к приватности и данным",
-      options: [
-        { text: "Осторожно делюсь личной информацией; ожидаю приватности, хотя не всегда понимаю, как работают технологии.", gen: "boomer" },
-        { text: "Ценю конфиденциальность; предпочитаю анонимность и избегаю излишнего публичного внимания.", gen: "genX" },
-        { text: "Готов(а) делиться некоторыми данными ради удобства; стараюсь контролировать цифровой след.", gen: "millennial" },
-        { text: "Легко делюсь данными ради персонализации, но беспокоюсь о ментальном здоровье; могу использовать анонимные приложения и разные онлайн‑персоны.", gen: "genZ" }
-      ]
-    },
-    {
-      text: "Обратная связь и похвала",
-      options: [
-        { text: "Привык(ла), что отсутствие новостей — хороший знак; жду формальных оценок раз в год.", gen: "boomer" },
-        { text: "Готов(а) принимать конструктивную критику, но предпочитаю работать самостоятельно и без постоянного контроля.", gen: "genX" },
-        { text: "Нужна регулярная обратная связь и наставничество; важна командная дискуссия и признание.", gen: "millennial" },
-        { text: "Хочу видеть прозрачность и получать моментальную реакцию; воспринимаю критику лично, но использую её для роста.", gen: "genZ" }
-      ]
-    },
-    {
-      text: "Предпочитаемая рабочая среда",
-      options: [
-        { text: "Традиционный офис с чёткой иерархией; личный стол и стабильный распорядок дня.", gen: "boomer" },
-        { text: "Гибкий график и личное пространство; ценю возможность удалённой работы, но люблю отдельный кабинет.", gen: "genX" },
-        { text: "Открытое пространство, коворкинги; люблю работать в команде и \u00abоткуда угодно\u00bb.", gen: "millennial" },
-        { text: "Гибридный или полностью удалённый формат; важны цифровые инструменты и асинхронное взаимодействие.", gen: "genZ" }
-      ]
-    },
-    {
-      text: "Идентичность и сообщество",
-      options: [
-        { text: "Самоопределение связано с семьёй, профессией и национальной принадлежностью; важна стабильность.", gen: "boomer" },
-        { text: "Ценю личную свободу и индивидуальность; могу принадлежать к субкультурам, но не смешиваю их.", gen: "genX" },
-        { text: "Формирую себя через сети и социальные проекты; ценю разнообразие и глобальные связи.", gen: "millennial" },
-        { text: "Не люблю ярлыки; присоединяюсь к сообществам по интересам и ценностям, а не по происхождению.", gen: "genZ" }
-      ]
-    },
-    {
-      text: "Верность брендам и покупательское поведение",
-      options: [
-        { text: "Доверяю проверенным брендам и остаюсь им верным долгое время.", gen: "boomer" },
-        { text: "Исследую и сравниваю; важнее качество, чем громкое имя.", gen: "genX" },
-        { text: "Читаю отзывы и ориентируюсь на социальные ценности бренда; могу перейти к другому, если опыт лучше.", gen: "millennial" },
-        { text: "Следую рекомендациям блогеров; выбираю бренды, разделяющие мои убеждения, легко меняю предпочтения.", gen: "genZ" }
-      ]
-    },
-    {
-      text: "Как вы решаете конфликты",
-      options: [
-        { text: "Избегаю конфронтаций и следую формальным процедурам; предпочитаю не высказывать несогласие публично.", gen: "boomer" },
-        { text: "Обсуждаю проблемы напрямую, но сосредоточен(а) на практическом результате; настойчив(а), но независим(а).", gen: "genX" },
-        { text: "Открыто обсуждаю конфликт, стремясь к консенсусу; важно услышать всех и проявить сочувствие.", gen: "millennial" },
-        { text: "Могу публично указать на проблему, включая через соцсети; ожидаю ответственности и прозрачности.", gen: "genZ" }
-      ]
-    },
-    {
-      text: "Пенсионные планы и будущее",
-      options: [
-        { text: "Планирую выйти на пенсию в традиционном возрасте и жить на накопления и пенсию.", gen: "boomer" },
-        { text: "Стремлюсь к финансовой независимости; возможно, хочу рано выйти на пенсию или открыть своё дело.", gen: "genX" },
-        { text: "Не уверен(а) в классическом пенсионном сценарии; думаю, что придётся работать дольше и менять карьеру.", gen: "millennial" },
-        { text: "Рассматриваю жизнь как непрерывное обучение; не привязываюсь к понятию пенсии и готов(а) менять направление деятельности ради удовлетворения.", gen: "genZ" }
-      ]
-    },
-    {
-      text: "Отношение к разнообразию и инклюзивности",
-      options: [
-        { text: "Верю в равные возможности, но не всегда обсуждаю тему инклюзии активно.", gen: "boomer" },
-        { text: "Считаю важным подход по заслугам; могу не участвовать в инициативах по разнообразию.", gen: "genX" },
-        { text: "Ожидаю и требую разнообразия; выступаю против предвзятости и поддерживаю маргинализированные группы.", gen: "millennial" },
-        { text: "Считаю инклюзию основой; ожидаю межсекционального подхода и создание безопасного пространства для всех идентичностей.", gen: "genZ" }
-      ]
-    },
-    {
-      text: "Потребление медиа",
-      options: [
-        { text: "Предпочитаю печатные газеты, телевидение и радио; доверяю традиционным источникам.", gen: "boomer" },
-        { text: "Пользуюсь кабельным телевидением, блогами и форумами; проверяю факты и сравниваю источники.", gen: "genX" },
-        { text: "Смотрю новости онлайн, слушаю подкасты и пользуюсь стримингом; осведомлён(а) о фейковых новостях.", gen: "millennial" },
-        { text: "Чаще всего потребляю короткие видео на платформах вроде TikTok и YouTube; слежу за блогерами и кросс‑проверяю информацию из разных источников.", gen: "genZ" }
-      ]
-    },
-    {
-      text: "Реакция на глобальные проблемы (например, изменение климата)",
-      options: [
-        { text: "Поддерживаю инициативы и программы, доверяя государству и организациям; предпочитаю помогать \u00abтихо\u00bb.", gen: "boomer" },
-        { text: "Применяю практичные методы вроде переработки и экономии ресурсов; не считаю себя активистом.", gen: "genX" },
-        { text: "Участвую в протестах, подписываю петиции, поддерживаю \u00abзелёные\u00bb компании и ожидаю ответственности от бизнеса.", gen: "millennial" },
-        { text: "Считаю проблему срочной; веду экологичный образ жизни, бойкотирую загрязнителей и активно освещаю тему в соцсетях.", gen: "genZ" }
-      ]
-    }
-  ];
+// ===== Определение поколений и описаний =====
+const GENS = ["boomer", "genx", "millennial", "zillennial", "genz"];
+const GEN_LABEL = {
+  boomer: "Бумер",
+  genx: "Поколение X",
+  millennial: "Миллениал",
+  zillennial: "Зелениал",
+  genz: "Зумер"
+};
+const GEN_DESC = {
+  boomer: "Традиционалист ориентации на долг и структурность. Ценит надёжность институтов, долгосрочные обязательства и понятные правила игры.",
+  genx: "Рациональный прагматик с упором на автономию. Ценит компетентность, ответственность и свободу действий без лишнего шума.",
+  millennial: "Творец перемен и смыслов. Важны развитие, совместная культура, прозрачность и баланс качества жизни.",
+  zillennial: "Гибрид миллениала и зумера: технологичен, но прагматичен; ищет смысл и баланс, избегая крайностей и токсичной продуктивности.",
+  genz: "Цифровой натив, ориентированный на идентичность, скорость и адаптивность. Чувствителен к ментальному здоровью и инклюзии."
+};
 
-  // Функция перемешивания массива (Fisher-Yates)
-  function shuffle(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
+// ===== Конструктор вопросов =====
+// Каждый вариант несёт веса по поколениям (0..3). Вопросы перемешиваются на загрузке, варианты — тоже.
+function q(text, options){
+  return { text, options };
+}
+function opt(text, w){
+  // w = { boomer:0..3, genx:0..3, millennial:0..3, zillennial:0..3, genz:0..3 }
+  return { text, w };
+}
+
+// 30 вопросов, короткие и профессиональные; темы: коммуникация, технологии, труд, ценности, мировоззрение.
+const QUESTIONS = [
+  q("Что для вас в приоритете при выборе работы?", [
+    opt("Стабильность и понятные правила", {boomer:3, genx:2, millennial:0, zillennial:0, genz:0}),
+    opt("Автономия и ответственность за результат", {boomer:1, genx:3, millennial:1, zillennial:0, genz:0}),
+    opt("Рост и развитие, наставничество", {boomer:0, genx:1, millennial:3, zillennial:2, genz:1}),
+    opt("Гибкость, баланс и смысл проектов", {boomer:0, genx:0, millennial:2, zillennial:3, genz:2})
+  ]),
+  q("Как реагируете на новое ИИ‑приложение, которое обсуждают коллеги?", [
+    opt("Сразу тестирую и ищу кейсы", {boomer:0, genx:1, millennial:2, zillennial:2, genz:3}),
+    opt("Жду стабильности и регламентов", {boomer:2, genx:3, millennial:1, zillennial:0, genz:0}),
+    opt("Использую точечно, когда есть польза", {boomer:1, genx:3, millennial:2, zillennial:1, genz:1}),
+    opt("Скептичен: хайпа много, пользы неясно", {boomer:2, genx:2, millennial:0, zillennial:0, genz:0})
+  ]),
+  q("Какой формат коммуникации для вас по умолчанию?", [
+    opt("Официальные письма/документы", {boomer:3, genx:2, millennial:1, zillennial:0, genz:0}),
+    opt("Короткие месседжи + мит", {boomer:0, genx:2, millennial:3, zillennial:2, genz:2}),
+    opt("Аудио/видео‑сообщения, коллаб‑платформы", {boomer:0, genx:1, millennial:2, zillennial:3, genz:3}),
+    opt("Эмодзи/реакции, быстрые треды", {boomer:0, genx:0, millennial:1, zillennial:2, genz:3})
+  ]),
+  q("Отношение к карьерной лестнице", [
+    opt("Нужна формальная иерархия", {boomer:3, genx:2, millennial:0, zillennial:0, genz:0}),
+    opt("Плоские структуры, но ясные роли", {boomer:1, genx:3, millennial:2, zillennial:1, genz:1}),
+    opt("Проектные сети и гибкие роли", {boomer:0, genx:1, millennial:3, zillennial:3, genz:2}),
+    opt("Децентрализация и самоуправление", {boomer:0, genx:0, millennial:1, zillennial:2, genz:3})
+  ]),
+  q("Как принимаете сложные решения?", [
+    opt("По регламентам и прецедентам", {boomer:3, genx:2, millennial:1, zillennial:0, genz:0}),
+    opt("Через сбор данных и риск‑оценку", {boomer:1, genx:3, millennial:2, zillennial:1, genz:1}),
+    opt("Итеративно: тест → фидбек → правка", {boomer:0, genx:1, millennial:3, zillennial:3, genz:2}),
+    opt("Быстро: прототип и масштабирование", {boomer:0, genx:0, millennial:1, zillennial:2, genz:3})
+  ]),
+  q("К чему больше тянет в командной работе?", [
+    opt("Надёжные процессы и сроки", {boomer:3, genx:2, millennial:1, zillennial:0, genz:0}),
+    opt("Самостоятельные зоны ответственности", {boomer:1, genx:3, millennial:1, zillennial:0, genz:0}),
+    opt("Обучение друг друга и общая миссия", {boomer:0, genx:1, millennial:3, zillennial:2, genz:1}),
+    opt("Асинхронность, гибкие созвоны", {boomer:0, genx:0, millennial:1, zillennial:2, genz:3})
+  ]),
+  q("Как относитесь к публичной самоидентичности (DEI, инклюзия)?", [
+    opt("Нейтрально: фокус на деле", {boomer:2, genx:2, millennial:1, zillennial:0, genz:0}),
+    opt("Поддерживаю институционально", {boomer:1, genx:2, millennial:2, zillennial:1, genz:1}),
+    opt("Поддерживаю и ожидаю от брендов", {boomer:0, genx:1, millennial:3, zillennial:3, genz:2}),
+    opt("Это базовый стандарт среды", {boomer:0, genx:0, millennial:1, zillennial:2, genz:3})
+  ]),
+  q("Где граница рабочего времени?", [
+    opt("Есть график — уважаем его", {boomer:3, genx:2, millennial:1, zillennial:0, genz:0}),
+    opt("Можно перерабатывать при необходимости", {boomer:2, genx:3, millennial:1, zillennial:0, genz:0}),
+    opt("Баланс важнее переработок", {boomer:0, genx:1, millennial:3, zillennial:3, genz:2}),
+    opt("Гибкие слоты, результат > часы", {boomer:0, genx:0, millennial:1, zillennial:2, genz:3})
+  ]),
+  q("Как относитесь к персональным данным/приватности?", [
+    opt("Лучше оффлайн и поменьше сервисов", {boomer:3, genx:2, millennial:0, zillennial:0, genz:0}),
+    opt("Использую крупные платформы с настройками", {boomer:1, genx:3, millennial:2, zillennial:1, genz:1}),
+    opt("Ок, если есть контроль и выгода", {boomer:0, genx:1, millennial:3, zillennial:3, genz:2}),
+    opt("Прагматично: цифровая жизнь — норма", {boomer:0, genx:0, millennial:1, zillennial:2, genz:3})
+  ]),
+  q("Что для вас успех?", [
+    opt("Статус, должность, стабильность", {boomer:3, genx:2, millennial:0, zillennial:0, genz:0}),
+    opt("Сильный продукт и автономия", {boomer:1, genx:3, millennial:2, zillennial:1, genz:1}),
+    opt("Смысл, развитие, вклад", {boomer:0, genx:1, millennial:3, zillennial:3, genz:2}),
+    opt("Баланс жизни и работы", {boomer:0, genx:0, millennial:2, zillennial:3, genz:3})
+  ]),
+  q("Подход к обучению", [
+    opt("Курсы/сертификации по плану", {boomer:3, genx:2, millennial:1, zillennial:0, genz:0}),
+    opt("Самообучение по задачам", {boomer:1, genx:3, millennial:2, zillennial:1, genz:1}),
+    opt("Микрообучение, комьюнити, наставники", {boomer:0, genx:1, millennial:3, zillennial:3, genz:2}),
+    opt("Кейсы/видео/ИИ‑подсказки", {boomer:0, genx:0, millennial:1, zillennial:2, genz:3})
+  ]),
+  q("Отношение к изменениям на рынке", [
+    opt("Снижаем риски, держим курс", {boomer:3, genx:2, millennial:0, zillennial:0, genz:0}),
+    opt("Адаптируем процессы постепенно", {boomer:1, genx:3, millennial:1, zillennial:0, genz:0}),
+    opt("Поворот через пилоты и данные", {boomer:0, genx:1, millennial:3, zillennial:3, genz:2}),
+    opt("Быстрая перестройка под тренд", {boomer:0, genx:0, millennial:1, zillennial:2, genz:3})
+  ]),
+  q("Формат обратной связи", [
+    opt("Плановые оценки/аттестации", {boomer:3, genx:2, millennial:0, zillennial:0, genz:0}),
+    opt("Короткие 1:1 по задачам", {boomer:1, genx:3, millennial:2, zillennial:1, genz:1}),
+    opt("Непрерывный фидбек и рефлексия", {boomer:0, genx:1, millennial:3, zillennial:3, genz:2}),
+    opt("Асинхронные ревью, трекеры", {boomer:0, genx:0, millennial:1, zillennial:2, genz:3})
+  ]),
+  q("Что для вас инновации?", [
+    opt("Надёжное улучшение текущего", {boomer:3, genx:2, millennial:0, zillennial:0, genz:0}),
+    opt("Доказанный прирост эффективности", {boomer:1, genx:3, millennial:2, zillennial:1, genz:1}),
+    opt("Прорыв через новые практики", {boomer:0, genx:1, millennial:3, zillennial:3, genz:2}),
+    opt("Смелые эксперименты сейчас", {boomer:0, genx:0, millennial:1, zillennial:2, genz:3})
+  ]),
+  q("Рабочие чаты/инструменты", [
+    opt("Почта и Доки — базово", {boomer:3, genx:2, millennial:1, zillennial:0, genz:0}),
+    opt("Чат + таск‑менеджер", {boomer:1, genx:3, millennial:3, zillennial:2, genz:1}),
+    opt("Облако‑борды, совместные редакторы", {boomer:0, genx:1, millennial:3, zillennial:3, genz:2}),
+    opt("Реакции/эмодзи, голосовые, ИИ‑сводки", {boomer:0, genx:0, millennial:1, zillennial:2, genz:3})
+  ]),
+  q("Подход к перегрузке/выгоранию", [
+    opt("Дисциплина и режим — основа", {boomer:3, genx:2, millennial:1, zillennial:0, genz:0}),
+    opt("Границы + делегирование", {boomer:1, genx:3, millennial:2, zillennial:1, genz:1}),
+    opt("Баланс и ресурсы ментального здоровья", {boomer:0, genx:1, millennial:3, zillennial:3, genz:3}),
+    opt("Смена формата/проекта быстро", {boomer:0, genx:0, millennial:1, zillennial:2, genz:2})
+  ]),
+  q("Отношение к брендам и ESG", [
+    opt("Нейтрально, главное — продукт", {boomer:2, genx:2, millennial:1, zillennial:0, genz:0}),
+    opt("Оцениваю ответственность бренда", {boomer:0, genx:2, millennial:3, zillennial:2, genz:1}),
+    opt("Ожидаю активной позиции бренда", {boomer:0, genx:1, millennial:3, zillennial:3, genz:2}),
+    opt("Лично участвую, голосую кошельком", {boomer:0, genx:0, millennial:2, zillennial:2, genz:3})
+  ]),
+  q("Роль офиса", [
+    opt("Центр работы и культуры", {boomer:3, genx:2, millennial:1, zillennial:0, genz:0}),
+    opt("Место для синхронизации", {boomer:1, genx:3, millennial:2, zillennial:1, genz:1}),
+    opt("Хаб по запросу команды", {boomer:0, genx:1, millennial:3, zillennial:3, genz:2}),
+    opt("Редкий формат, в основном онлайн", {boomer:0, genx:0, millennial:1, zillennial:2, genz:3})
+  ]),
+  q("Подход к деньгам/риску", [
+    opt("Сбережения и долгосрок", {boomer:3, genx:2, millennial:1, zillennial:0, genz:0}),
+    opt("Диверсификация и страховка", {boomer:1, genx:3, millennial:2, zillennial:1, genz:1}),
+    opt("Инвестиции в развитие/активы", {boomer:0, genx:1, millennial:3, zillennial:3, genz:2}),
+    opt("Высокий риск ради скорости", {boomer:0, genx:0, millennial:1, zillennial:1, genz:3})
+  ]),
+  q("Как относитесь к бюрократии?", [
+    opt("Необходимое ядро порядка", {boomer:3, genx:2, millennial:0, zillennial:0, genz:0}),
+    opt("Оптимизировать, но сохранять", {boomer:1, genx:3, millennial:2, zillennial:1, genz:1}),
+    opt("Заменять процессами/техникой", {boomer:0, genx:1, millennial:3, zillennial:3, genz:2}),
+    opt("Резать максимально, экспериментировать", {boomer:0, genx:0, millennial:1, zillennial:2, genz:3})
+  ]),
+  q("Формат целей", [
+    opt("Годовые KPI и планы", {boomer:3, genx:2, millennial:0, zillennial:0, genz:0}),
+    opt("Квартальные цели и обзоры", {boomer:1, genx:3, millennial:2, zillennial:1, genz:1}),
+    opt("OKR/итерации на результат", {boomer:0, genx:1, millennial:3, zillennial:3, genz:2}),
+    opt("Короткие спринты и метрики", {boomer:0, genx:0, millennial:1, zillennial:2, genz:3})
+  ]),
+  q("Формат обучения команды", [
+    opt("Тренинги раз в полгода", {boomer:3, genx:2, millennial:0, zillennial:0, genz:0}),
+    opt("Программы развития по ролям", {boomer:1, genx:3, millennial:2, zillennial:1, genz:1}),
+    opt("Лёрнинг‑сессии, менторинг", {boomer:0, genx:1, millennial:3, zillennial:3, genz:2}),
+    opt("Just‑in‑time контент, AI‑тьютор", {boomer:0, genx:0, millennial:1, zillennial:2, genz:3})
+  ]),
+  q("Мотивация к работе", [
+    opt("Обязанность и стабильность", {boomer:3, genx:2, millennial:0, zillennial:0, genz:0}),
+    opt("Ответственность и влияние", {boomer:1, genx:3, millennial:2, zillennial:1, genz:1}),
+    opt("Смысл и рост", {boomer:0, genx:1, millennial:3, zillennial:3, genz:2}),
+    opt("Свобода формата и времени", {boomer:0, genx:0, millennial:1, zillennial:2, genz:3})
+  ]),
+  q("Как относитесь к соцсетям?", [
+    opt("Минимум, предпочитаю оффлайн", {boomer:3, genx:2, millennial:0, zillennial:0, genz:0}),
+    opt("Инструмент, но в рабочем ключе", {boomer:1, genx:3, millennial:2, zillennial:1, genz:1}),
+    opt("Комьюнити и нетворк", {boomer:0, genx:1, millennial:3, zillennial:3, genz:2}),
+    opt("Среда жизни и творчества", {boomer:0, genx:0, millennial:1, zillennial:2, genz:3})
+  ]),
+  q("Как относитесь к удалёнке?", [
+    opt("Редко, офис важнее", {boomer:3, genx:2, millennial:0, zillennial:0, genz:0}),
+    opt("Гибрид по правилам", {boomer:1, genx:3, millennial:2, zillennial:1, genz:1}),
+    opt("Гибрид по задаче/проекту", {boomer:0, genx:1, millennial:3, zillennial:3, genz:2}),
+    opt("Удалёнка норма, офис по нужде", {boomer:0, genx:0, millennial:1, zillennial:2, genz:3})
+  ]),
+  q("Подход к конфликтам", [
+    opt("Формализуем, фиксируем договорённости", {boomer:3, genx:2, millennial:1, zillennial:0, genz:0}),
+    opt("Решаем в 1:1 по фактам", {boomer:1, genx:3, millennial:2, zillennial:1, genz:1}),
+    opt("Медиация и фасилитация", {boomer:0, genx:1, millennial:3, zillennial:3, genz:2}),
+    opt("Короткие созвоны, быстрые итерации", {boomer:0, genx:0, millennial:1, zillennial:2, genz:3})
+  ]),
+  q("Отношение к ошибкам", [
+    opt("Их надо избегать: проверка заранее", {boomer:3, genx:2, millennial:0, zillennial:0, genz:0}),
+    opt("Контроль качества и чек‑листы", {boomer:1, genx:3, millennial:2, zillennial:1, genz:1}),
+    opt("Учимся на ошибках быстро", {boomer:0, genx:1, millennial:3, zillennial:3, genz:2}),
+    opt("Fail‑fast как стратегия", {boomer:0, genx:0, millennial:1, zillennial:2, genz:3})
+  ]),
+  q("Как потребляете контент?", [
+    opt("Статьи/книги, длинные форматы", {boomer:3, genx:2, millennial:1, zillennial:0, genz:0}),
+    opt("Подкасты/лонгриды по темам", {boomer:1, genx:3, millennial:2, zillennial:1, genz:1}),
+    opt("Визуальные конспекты и курсы", {boomer:0, genx:1, millennial:3, zillennial:3, genz:2}),
+    opt("Клипы/шорты/стримы", {boomer:0, genx:0, millennial:1, zillennial:2, genz:3})
+  ]),
+  q("Отношение к корпоративной культуре", [
+    opt("Единые правила и лояльность", {boomer:3, genx:2, millennial:0, zillennial:0, genz:0}),
+    opt("Ответственность и прозрачность", {boomer:1, genx:3, millennial:2, zillennial:1, genz:1}),
+    opt("Смысл, развитие, психологическая безопасность", {boomer:0, genx:1, millennial:3, zillennial:3, genz:2}),
+    opt("Гибкость, индивидуальность, async", {boomer:0, genx:0, millennial:1, zillennial:2, genz:3})
+  ]),
+  q("Планирование личной жизни", [
+    opt("Стабильные этапы и сроки", {boomer:3, genx:2, millennial:0, zillennial:0, genz:0}),
+    opt("План по ресурсам/возможностям", {boomer:1, genx:3, millennial:2, zillennial:1, genz:1}),
+    opt("Гибкие горизонты, ценность опыта", {boomer:0, genx:1, millennial:3, zillennial:3, genz:2}),
+    opt("Жизнь‑проект, пробую и меняю", {boomer:0, genx:0, millennial:1, zillennial:2, genz:3})
+  ]),
+  q("Подход к экологии/соц. темам", [
+    opt("Личная экономия и порядок", {boomer:3, genx:2, millennial:0, zillennial:0, genz:0}),
+    opt("Системные правила и стандарты", {boomer:1, genx:3, millennial:2, zillennial:1, genz:1}),
+    opt("Осмысленный выбор брендов/компаний", {boomer:0, genx:1, millennial:3, zillennial:3, genz:2}),
+    opt("Активизм, публичные сигналы", {boomer:0, genx:0, millennial:2, zillennial:2, genz:3})
+  ]),
+  q("Как относитесь к наставничеству?", [
+    opt("Старшие учат младших — норма", {boomer:3, genx:2, millennial:1, zillennial:0, genz:0}),
+    opt("Взаимное наставничество по ролям", {boomer:1, genx:3, millennial:2, zillennial:2, genz:1}),
+    opt("Комьюнити и peer‑to‑peer", {boomer:0, genx:1, millennial:3, zillennial:3, genz:2}),
+    opt("Онлайн‑менторы/ИИ‑тьюторы", {boomer:0, genx:0, millennial:1, zillennial:2, genz:3})
+  ]),
+  q("Скорость принятия решений", [
+    opt("Медленно и основательно", {boomer:3, genx:2, millennial:0, zillennial:0, genz:0}),
+    opt("Планируем и делаем поэтапно", {boomer:1, genx:3, millennial:2, zillennial:1, genz:1}),
+    opt("Быстро с контролем рисков", {boomer:0, genx:1, millennial:3, zillennial:3, genz:2}),
+    opt("Очень быстро, добираем по пути", {boomer:0, genx:0, millennial:1, zillennial:2, genz:3})
+  ])
+];
+
+// Добавим до 30 (сейчас ~28). Дополняем ещё 2 вопросами:
+QUESTIONS.push(
+  q("Главный критерий выбора работодателя?", [
+    opt("Надёжность и репутация", {boomer:3, genx:2, millennial:1, zillennial:0, genz:0}),
+    opt("Сложные задачи и свобода", {boomer:1, genx:3, millennial:2, zillennial:1, genz:1}),
+    opt("Культура и развитие", {boomer:0, genx:1, millennial:3, zillennial:3, genz:2}),
+    opt("Гибкость, удалёнка, async", {boomer:0, genx:0, millennial:1, zillennial:2, genz:3})
+  ]),
+  q("Как относитесь к публичности/личному бренду?", [
+    opt("Сдержанность, приватность важнее", {boomer:3, genx:2, millennial:0, zillennial:0, genz:0}),
+    opt("Профессиональная публичность точечно", {boomer:1, genx:3, millennial:2, zillennial:1, genz:1}),
+    opt("Осознанная публичность как актив", {boomer:0, genx:1, millennial:3, zillennial:3, genz:2}),
+    opt("Медиасреда — часть жизни и работы", {boomer:0, genx:0, millennial:1, zillennial:2, genz:3})
+  ])
+);
+
+// ===== Утилиты =====
+function shuffle(arr){
+  for(let i=arr.length-1; i>0; i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
   }
+  return arr;
+}
 
-  // Генерация вопросов на странице
-  function renderQuestions() {
-    const form = document.getElementById('quizForm');
-    const letters = ['A', 'B', 'C', 'D'];
+// Перемешиваем вопросы и внутри — варианты
+const SHUFFLED = shuffle(QUESTIONS.map(q => ({...q, options: shuffle([...q.options])})));
 
-    questionsData.forEach((question, index) => {
-      // Создать контейнер вопроса
-      const qDiv = document.createElement('div');
-      qDiv.className = 'question';
+const quizEl = document.getElementById('quiz');
+const counterEl = document.getElementById('counter');
+const progressBar = document.getElementById('progressBar');
 
-      // Заголовок
-      const h2 = document.createElement('h2');
-      h2.textContent = `${index + 1}. ${question.text}`;
-      qDiv.appendChild(h2);
+// Рендер карточек
+SHUFFLED.forEach((item, idx)=>{
+  const card = document.createElement('div');
+  card.className = 'card';
+  // set index for animation delay
+  card.style.setProperty('--i', idx);
+  const title = document.createElement('h3');
+  title.className = 'q-title';
+  title.textContent = (idx+1)+'. '+item.text;
+  const opts = document.createElement('div');
+  opts.className = 'options';
 
-      // Контейнер для вариантов
-      const optionsDiv = document.createElement('div');
-      optionsDiv.className = 'options';
-
-      // Перемешать варианты
-      const shuffledOptions = shuffle(question.options.slice());
-
-      // Создать каждый вариант
-      shuffledOptions.forEach((opt, optIndex) => {
-        const label = document.createElement('label');
-        const input = document.createElement('input');
-        input.type = 'radio';
-        input.name = `q${index + 1}`;
-        input.value = opt.gen;
-        label.appendChild(input);
-        const letter = letters[optIndex];
-        const textNode = document.createTextNode(` ${letter}. ${opt.text}`);
-        label.appendChild(textNode);
-        optionsDiv.appendChild(label);
-      });
-
-      qDiv.appendChild(optionsDiv);
-      form.appendChild(qDiv);
+  item.options.forEach((optItem)=>{
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'option';
+    btn.textContent = optItem.text;
+    btn.addEventListener('click', ()=>{
+      // снять выделение у соседей
+      [...opts.children].forEach(c=>c.classList.remove('selected'));
+      btn.classList.add('selected');
+      btn.dataset.selected = 'true';
+      opts.dataset.answer = JSON.stringify(optItem.w);
+      updateCounter();
     });
-  }
-
-  // Вызываем генерацию при загрузке
-  document.addEventListener('DOMContentLoaded', renderQuestions);
-
-  // Обработчик кнопки завершения
-  document.getElementById('finishButton').addEventListener('click', function() {
-    const form = document.getElementById('quizForm');
-    const totalQuestions = questionsData.length;
-    const counts = { boomer: 0, genX: 0, millennial: 0, genZ: 0 };
-
-    // Проверяем, что на каждый вопрос есть ответ
-    for (let i = 1; i <= totalQuestions; i++) {
-      const selected = form.querySelector(`input[name="q${i}"]:checked`);
-      if (!selected) {
-        alert('Пожалуйста, ответьте на все вопросы. Вопрос ' + i + ' ещё не выбран.');
-        return;
-      }
-      counts[selected.value]++;
-    }
-
-    // Определяем доминирующее поколение
-    let dominant = 'boomer';
-    for (const key in counts) {
-      if (counts[key] > counts[dominant]) {
-        dominant = key;
-      }
-    }
-
-    // Текст результата
-    let resultMessage = '';
-    switch (dominant) {
-      case 'boomer':
-        resultMessage = '<strong>Бумер</strong>. Вы склонны ценить стабильность, уважение к старшим и готовы вкладывать много сил в работу. Вы ориентированы на долгосрочные отношения с работодателем и традиционные формы взаимодействия.';
-        break;
-      case 'genX':
-        resultMessage = '<strong>Поколение X</strong>. Вы независимы, цените свободу действий и баланс между работой и личной жизнью. Технологии — ваш инструмент, а не цель, и вы спокойно совмещаете традиционный и современный подход.';
-        break;
-      case 'millennial':
-        resultMessage = '<strong>Миллениал</strong>. Вам важно, чтобы работа имела смысл; вы цените коллаборацию, разнообразие и гибкость. Вы активны в социальных сетях и стремитесь к постоянному развитию.';
-        break;
-      case 'genZ':
-        resultMessage = '<strong>Зумер</strong> (поколение Z). Вы — цифровой абориген, для вас важны личные ценности, ментальное здоровье и свобода. Вы быстро адаптируетесь, активно участвуете в общественных проектах и строите идентичность через сообщества по интересам.';
-        break;
-      default:
-        resultMessage = 'Не удалось определить поколение. Попробуйте пройти тест ещё раз.';
-    }
-
-    // Отобразить результат
-    const resultSection = document.getElementById('resultSection');
-    document.getElementById('resultText').innerHTML = resultMessage;
-    resultSection.style.display = 'block';
-    resultSection.scrollIntoView({ behavior: 'smooth' });
+    opts.appendChild(btn);
   });
+
+  card.appendChild(title);
+  card.appendChild(opts);
+  quizEl.appendChild(card);
+});
+
+// initialize counter and progress bar at start
+updateCounter();
+
+function updateCounter(){
+  const total = SHUFFLED.length;
+  const chosen = [...document.querySelectorAll('.options')].filter(n=>n.dataset.answer).length;
+  counterEl.textContent = `${chosen}/${total} выбрано`;
+  if(progressBar){
+    const pct = total ? (chosen/total)*100 : 0;
+    progressBar.style.width = pct + '%';
+  }
+}
+
+// Сброс
+document.getElementById('resetBtn').addEventListener('click', ()=>{
+  document.querySelectorAll('.option').forEach(b=>b.classList.remove('selected'));
+  document.querySelectorAll('.options').forEach(o=>{ delete o.dataset.answer; });
+  updateCounter();
+});
+
+// Подсчёт и модалка
+const submitBtn = document.getElementById('submitBtn');
+const modal = document.getElementById('resultModal');
+const closeModalBtn = document.getElementById('closeModal');
+const resultBody = document.getElementById('resultBody');
+
+submitBtn.addEventListener('click', ()=>{
+  const answers = [...document.querySelectorAll('.options')].map(o=>o.dataset.answer? JSON.parse(o.dataset.answer): null);
+  const total = answers.length;
+  const answered = answers.filter(Boolean).length;
+  if(answered < total){
+    if(!confirm(`Вы ответили на ${answered} из ${total} вопросов. Показать результат по неполным данным?`)) return;
+  }
+  const scores = {boomer:0, genx:0, millennial:0, zillennial:0, genz:0};
+  for(const a of answers){
+    if(!a) continue;
+    for(const g of GENS){ scores[g]+= (a[g]||0); }
+  }
+  // Нормируем в проценты
+  const sum = Object.values(scores).reduce((s,v)=>s+v,0) || 1;
+  const perc = Object.fromEntries(Object.entries(scores).map(([k,v])=>[k, Math.round(v*100/sum)]));
+  // Сортировка для топов
+  const ranking = Object.entries(perc).sort((a,b)=>b[1]-a[1]);
+  const [topKey, topVal] = ranking[0];
+  const [secKey, secVal] = ranking[1];
+
+  // Рендер результата
+  // Build HTML with data-target attributes for bar animations
+  let barsHtml = '';
+  ranking.forEach(([k,v])=>{
+    barsHtml += `
+      <div class="bar-row">
+        <div class="bar-label">${GEN_LABEL[k]}</div>
+        <div class="bar" style="flex:1"><div data-target="${v}" style="width:0%;"></div></div>
+        <div class="bar-val">${v}%</div>
+      </div>
+    `;
+  });
+  resultBody.innerHTML = `
+    <div class="result-tag">${GEN_LABEL[topKey]} — ${topVal}%</div>
+    <div class="result-sub">Вторичная идентичность: ${GEN_LABEL[secKey]} — ${secVal}%</div>
+    <div class="bars">${barsHtml}</div>
+    <div style="height:14px"></div>
+    <div class="result-desc"><strong>${GEN_LABEL[topKey]}.</strong> ${GEN_DESC[topKey]}</div>
+  `;
+  // After insertion, animate bars to their target widths
+  setTimeout(()=>{
+    document.querySelectorAll('.bars .bar > div').forEach(div=>{
+      const target = div.dataset.target;
+      if(target){ div.style.width = `${target}%`; }
+    });
+  }, 50);
+
+  modal.showModal();
+});
+closeModalBtn.addEventListener('click', ()=>modal.close());
 </script>
 </body>
 </html>
